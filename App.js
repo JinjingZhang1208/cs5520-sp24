@@ -1,27 +1,20 @@
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet,TextInput, View, text } from 'react-native'
+import { StyleSheet,TextInput, View, Text } from 'react-native'
 import Header from './components/Header';
 import { useState } from 'react';
+import Input from './components/Input';
 
 export default function App () {
   const appName ='My Awesome app'
-  const [text, setText] = useState("")
   
-  // callback handler
-  function changeTextHandler(changedText) {
-    setText(changedText)
-  }
+  
+  
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Header name = {appName} version={2} /> 
-      <TextInput 
-        placeholder='Type something'
-        style={styles.input}
-        value={text} 
-        onChangeText={changeTextHandler} 
-        />
+      <Input />
     <Text>{text}</Text>
     </View>
   )
