@@ -22,7 +22,7 @@ export default function App () {
         value={text} 
         onChangeText={changeTextHandler} 
         />
-
+    <Text>{text}</Text>
     </View>
   )
 }
