@@ -1,23 +1,29 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
 
 export default function Input() {
-  const [text, setText] = useState("")
-
+  const [text, setText] = useState("");
   // callback handler
   function changeTextHandler(changedText) {
-    setText(changedText)
+    console.log("user is typing ", changedText);
+    setText(changedText);
   }
   return (
     <View>
-      <TextInput 
-        placeholder='Type something'
+      <TextInput
+        placeholder="Type something"
         style={styles.input}
-        value={text} 
-        onChangeText={changeTextHandler} 
-        />
+        value={text}
+        onChangeText={changeTextHandler}
+      />
     </View>
-  )
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  input: {
+    borderBottomWidth: 2,
+    borderBottomColor: "purple",
+    width: "50%",
+  },
+});
