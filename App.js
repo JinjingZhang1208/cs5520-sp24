@@ -7,15 +7,11 @@ import Input from './components/Input';
 export default function App () {
   const appName ='My Awesome app'
   
-  
-  
-
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Header name = {appName} version={2} /> 
       <Input />
-    <Text>{text}</Text>
     </View>
   )
 }
