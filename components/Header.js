@@ -9,4 +9,10 @@ export default function Header ({name}) {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  header: {
+    color: "darkmagneta",
+    
+  
+  }
+})

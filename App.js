@@ -1,20 +1,37 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, TextInput, View, Text } from "react-native";
+import { StyleSheet, TextInput, View, Text, Button, SafeAreaView} from "react-native";
 import Header from "./components/Header";
 import { useState } from "react";
 import Input from "./components/Input";
 
 export default function App() {
   const appName = "My awesome app";
-  // const [text, setText] = useState("");
+  const [text, setText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  function receiveInput(data) {
+    console.log('receive input from input.js', data);
+    //use this to update the text showing in the text component
+    setText(data);
+    setIsModalVisible(false);
+  }
+
+  function dismissModal() {
+    setIsModalVisible(false);
+  }
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Header name={appName} version={2} />
-      <Input />
-      {/* <Text>{text}</Text> */}
-    </View>
+    <SafeAreaView style={styles.container}>
+       <View style={styles.topView}>
+        <StatusBar style="auto" />
+        <Header name={appName} version={2} />
+        <Input inputHandler={receiveInput} modalVisible={isModalVisible} dismissModal={dismissModal}/>
+        <Button title="add a goal" onPress={()=>setIsModalVisible(true)}/>
+      </View>
+      <View style={styles.bottomView}>
+        <Text style={styles.text}>{text}</Text>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -25,4 +42,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  topView: {
+    flex: 1,
+  },
+  bottomView: {
+    flex: 4,
+    backgroundColor: "lightpink"
+  },
+  text: {
+    textAlign: "center",
+  }
 });
