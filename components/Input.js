@@ -20,7 +20,7 @@ export default function Input({inputHandler, modalVisible, dismissModal}) {
   return (
     <Modal visible={modalVisible}>
       <View style={styles.container}>
-        <Image source={require("../assets/WechatIMG111.jpg")} style={styles.image}/>
+        <Image source={require("../assets/goal.png")} style={styles.image}/>
         <TextInput
           placeholder="Type something"
           style={styles.input}
