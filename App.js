@@ -39,7 +39,9 @@ export default function App() {
         />
       </View>
       <View style={styles.bottomView}>
-        <Text style={styles.text}>{text}</Text>
+        <View style={styles.textContainer}>
+          {text ? <Text style={styles.text}>{text}</Text> : null}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -66,4 +68,7 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 5,
   },
+  textContainer: {
+    borderRadius: 10,
+  }
 });
