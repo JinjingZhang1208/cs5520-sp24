@@ -20,6 +20,7 @@ export default function Input({ inputHandler, modalVisible, dismissModal }) {
 
   function confirmHandler() {
     inputHandler(text);
+    setText("");
   }
   function cancelHandler() {
     // hide the modal
@@ -46,7 +47,7 @@ export default function Input({ inputHandler, modalVisible, dismissModal }) {
             <Button title="Cancel" onPress={cancelHandler} />
           </View>
           <View style={styles.buttonView}>
-            <Button title="Confirm" onPress={confirmHandler} />
+            <Button title="Confirm" onPress={confirmHandler} disabled={!text} />
           </View>
         </View>
       </View>
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#ccc",
+    backgroundColor: "#aaa",
     alignItems: "center",
     justifyContent: "center",
   },
