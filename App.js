@@ -6,6 +6,8 @@ import {
   Text,
   Button,
   SafeAreaView,
+  ScrollView,
+  FlatList,
 } from "react-native";
 import Header from "./components/Header";
 import { useState } from "react";
@@ -14,14 +16,17 @@ import Input from "./components/Input";
 export default function App() {
   const appName = "My awesome app";
   const [text, setText] = useState("");
+  const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+
+
   function receiveInput(data) {
-    console.log("recieve input ", data);
-    setText(data);
+    const newGoal = {text: data, id: Math.random()};
+    setGoals([...goals, newGoal]);
     setIsModalVisible(false);
-    //use this to update the text showing in the
-    //Text component
   }
+
   function dismissModal() {
     setIsModalVisible(false);
   }
@@ -39,9 +44,16 @@ export default function App() {
         />
       </View>
       <View style={styles.bottomView}>
-        <View style={styles.textContainer}>
-          {text ? <Text style={styles.text}>{text}</Text> : null}
-        </View>
+        <FlatList 
+          data={goals}
+          renderItem={( {item }) => {
+            return (
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>{item.text}</Text>
+              </View>
+            )
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -59,9 +71,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
   },
-  bottomView: { flex: 4, backgroundColor: "lightpink" },
+  bottomView: { flex: 4, backgroundColor: "lightpink", alignItems: "center", justifyContent: "center" },
   text: { 
     textAlign: "center",
+    alignItems: "center",
     fontSize: 20,
     backgroundColor: "purple",
     color: "white",
@@ -70,5 +83,10 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     borderRadius: 10,
+    backgroundColor: "purple",
+    marginTop: 35,
+  },
+  scrollViewContent:{
+    alignItems: "center",
   }
 });
