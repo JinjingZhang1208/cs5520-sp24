@@ -1,30 +1,40 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import Home from './components/Home';
-import GoalDetails from './components/GoalDetails';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import Home from "./components/Home";
 
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import GoalDetails from "./components/GoalDetails";
+
+const Stack = createNativeStackNavigator();
 export default function App() {
-  
-  const Stack = createStackNavigator();
-
   return (
-   <NavigationContainer>
-    <Stack.Navigator screenOptions={{
-        headerStyle: {backgroundColor: 'lightblue'},
-        headerTintColor: 'blue', }}>
-      <Stack.Screen options={{title: 'All my goals'}} name="Home" component={Home} />
-      <Stack.Screen
-      name="Details"
-      component={GoalDetails}
-      options={({ route }) => {return {
-        title: route.params.goalData.text
-      }}}
-    />
-     </Stack.Navigator>
-   </NavigationContainer>
-  )
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: "#929" },
+          headerTintColor: "white",
+        }}
+      >
+        <Stack.Screen
+          options={{
+            headerTitle: "All My Goals",
+          }}
+          name="Home"
+          component={Home}
+        />
+        <Stack.Screen
+          options={({ route }) => {
+            return {
+              headerTitle: route.params.data.text,
+            };
+          }}
+          name="Details"
+          component={GoalDetails}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

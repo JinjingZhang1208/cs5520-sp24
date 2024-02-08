@@ -13,10 +13,8 @@ import Header from "./Header";
 import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
-import { useNavigation } from "@react-navigation/native";
 
-export default function App() {
-  const navigation = useNavigation();
+export default function Home({ navigation }) {
   const appName = "My awesome app";
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
@@ -40,21 +38,30 @@ export default function App() {
   function dismissModal() {
     setIsModalVisible(false);
   }
-  function goalDeleteHandler(deleteId) {
-    // const updatedArray = goals.filter((goal) =>
-    //  {return goal.id !== deleteId; });
-    //  console.log("updated array", updatedArray);
-     setGoals((currentGoals)=> {
+
+  function goalDeleteHandler(deletedId) {
+    console.log("deleted ", deletedId);
+    // remove that from the goals array --> filter
+    // const updatedArray = goals.filter((goal) => {
+    //   return goal.id !== deletedId;
+    // });
+    //use updater function whenever we are updating state variables based on the current value
+
+    // setGoals(updatedArray);
+    setGoals((currentGoals) => {
       return currentGoals.filter((goal) => {
-        return goal.id !== deleteId;
-      } );
-   });
+        return goal.id !== deletedId;
+      });
+    });
   }
 
-  function detailFunction(goalItem){
-    navigation.navigate("Details", {goalData: goalItem});
+  function goalPressHandler(goalItem) {
+    // console.log(goalItem);
+    // navigate to GoalDetails using navigation prop
+    //We need to pass the goal data to Details page
+    navigation.navigate("Details", { data: goalItem });
   }
- 
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topView}>
@@ -74,7 +81,11 @@ export default function App() {
           data={goals}
           renderItem={({ item }) => {
             return (
-              <GoalItem goalObj={item} deleteFunction={goalDeleteHandler} detailFunction={detailFunction}/>
+              <GoalItem
+                goalObj={item}
+                deleteFunction={goalDeleteHandler}
+                detailFunction={goalPressHandler}
+              />
             );
           }}
         />
@@ -107,5 +118,5 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     alignItems: "center",
   },
-  bottomView: { flex: 4, backgroundColor: "lightpink" },
+  bottomView: { flex: 4, backgroundColor: "#dcd" },
 });
