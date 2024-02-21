@@ -10,24 +10,38 @@ import {
   FlatList,
 } from "react-native";
 import Header from "./Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import {database} from "../firebase-files/firebaseSetup";
+import { database } from "../firebase-files/firebaseSetup";
+import { writeToDB } from "../firebase-files/firestoreHelper";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function Home({ navigation }) {
-  console.log(database);
+  
+  // useEffect(() => {
+  //   //set up a listener to listen to get realtime data from firestore -only after the first time
+  //   onSnapShot(collection(databse, 'goals'), (querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       console.log(doc.id, " => ", doc.data());
+  //     });
+  //   });
+  // }, []);
+
+  // console.log(database);
   const appName = "My awesome app";
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  // console.log(database);
   function receiveInput(data) {
     // console.log("recieve input ", data);
     // setText(data);
     //1. define a new object {text:.., id:..} and store data in object's text
     // 2. use Math.random() to set the object's id
-    const newGoal = { text: data, id: Math.random() };
+    // const newGoal = { text: data, id: Math.random() };
+    const newGoal ={text: data};
     // const newArray = [...goals, newGoal];
     //setGoals (newArray)
     //use updater function whenever we are updating state variables based on the current value
@@ -37,7 +51,10 @@ export default function Home({ navigation }) {
     setIsModalVisible(false);
     //use this to update the text showing in the
     //Text component
+    writeToDB(newGoal);
+    console.log("data written to db");
   }
+
   function dismissModal() {
     setIsModalVisible(false);
   }
