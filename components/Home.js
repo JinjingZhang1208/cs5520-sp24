@@ -8,53 +8,61 @@ import {
   SafeAreaView,
   ScrollView,
   FlatList,
+  Alert,
 } from "react-native";
 import Header from "./Header";
 import { useState, useEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database } from "../firebase-files/firebaseSetup";
-import { writeToDB } from "../firebase-files/firestoreHelper";
 import { collection, onSnapshot } from "firebase/firestore";
 
+import { deleteFromDB, writeToDB } from "../firebase-files/firestoreHelper";
+import { database } from "../firebase-files/firebaseSetup";
 export default function Home({ navigation }) {
-  
-  // useEffect(() => {
-  //   //set up a listener to listen to get realtime data from firestore -only after the first time
-  //   onSnapShot(collection(databse, 'goals'), (querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       console.log(doc.id, " => ", doc.data());
-  //     });
-  //   });
-  // }, []);
-
-  // console.log(database);
+  useEffect(() => {
+    // set up a listener to get realtime data from firestore - only after the first render
+    onSnapshot(collection(database, "goals"), (querySnapshot) => {
+      if (querySnapshot.empty) {
+        Alert.alert("You need to add something");
+        return;
+      }
+      // loop through this querySnapshot (forEach) => a bunch of docSnapshot
+      // call .data() on each documentsnapshot
+      let newArray = [];
+      querySnapshot.forEach((doc) => {
+        // update this to also add id of doc to the newArray
+        newArray.push({ ...doc.data(), id: doc.id });
+        // store this data in a new array
+      });
+      // console.log(newArray);
+      //updating the goals array with the new array
+      setGoals(newArray);
+    });
+  }, []);
   const appName = "My awesome app";
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // console.log(database);
   function receiveInput(data) {
     // console.log("recieve input ", data);
     // setText(data);
     //1. define a new object {text:.., id:..} and store data in object's text
     // 2. use Math.random() to set the object's id
     // const newGoal = { text: data, id: Math.random() };
-    const newGoal ={text: data};
+    //don't need id anymore as Firestore is assigning one automatically
+    const newGoal = { text: data };
     // const newArray = [...goals, newGoal];
     //setGoals (newArray)
     //use updater function whenever we are updating state variables based on the current value
-    setGoals((currentGoals) => [...currentGoals, newGoal]);
+    // setGoals((currentGoals) => [...currentGoals, newGoal]);
 
     // 3. how do I add this object to goals array?
     setIsModalVisible(false);
     //use this to update the text showing in the
     //Text component
     writeToDB(newGoal);
-    console.log("data written to db");
   }
-
   function dismissModal() {
     setIsModalVisible(false);
   }
@@ -68,11 +76,12 @@ export default function Home({ navigation }) {
     //use updater function whenever we are updating state variables based on the current value
 
     // setGoals(updatedArray);
-    setGoals((currentGoals) => {
-      return currentGoals.filter((goal) => {
-        return goal.id !== deletedId;
-      });
-    });
+    // setGoals((currentGoals) => {
+    //   return currentGoals.filter((goal) => {
+    //     return goal.id !== deletedId;
+    //   });
+    // });
+    deleteFromDB(deletedId);
   }
 
   function goalPressHandler(goalItem) {
