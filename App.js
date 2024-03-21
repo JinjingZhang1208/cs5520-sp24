@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 import React, { useEffect, useState } from "react";
 import Home from "./components/Home";
 
@@ -16,56 +16,79 @@ import Profile from "./components/Profile";
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true); // To manage loading state
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        // const uid = user.uid;
         setUserLoggedIn(true);
-        // ...
       } else {
-        // User is signed out
-        // ...
         setUserLoggedIn(false);
       }
+      setLoading(false); // Set loading to false once auth state is determined
     });
+
+    // Cleanup function
+    return () => unsubscribe();
   }, []);
-  const AuthStack = (
-    <>
-      <Stack.Screen name="Signup" component={Signup} />
-      <Stack.Screen name="Login" component={Login} />
-    </>
-  );
-  const AppStack = (
-    <>
-      <Stack.Screen
-        options={({ navigation }) => {
-          return {
-            headerTitle: "All My Goals",
-            headerRight: () => {
-              return (
-                <PressableButton
-                  onPressFunction={() => {
-                    navigation.navigate("Profile");
-                  }}
-                >
-                  <Ionicons name="person" size={24} color="white" />
-                </PressableButton>
-              );
-            },
-          };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: "#929" },
+          headerTintColor: "white",
         }}
-        name="Home"
-        component={Home}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          headerRight: () => {
-            return (
+      >
+        {userLoggedIn ? (
+          <Stack.Screen
+            options={({ navigation }) => {
+              return {
+                headerTitle: "All My Goals",
+                headerRight: () => (
+                  <PressableButton
+                    onPressFunction={() => {
+                      navigation.navigate("Profile");
+                    }}
+                  >
+                    <Ionicons name="person" size={24} color="white" />
+                  </PressableButton>
+                ),
+              };
+            }}
+            name="Home"
+            component={Home}
+          />
+        ) : (
+          <Stack.Screen
+            name="Main"
+            component={MainScreen}
+            options={{ headerShown: false }}
+          />
+        )}
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={{ title: "Sign Up" }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ title: "Log In" }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerRight: () => (
               <PressableButton
                 onPressFunction={() => {
                   try {
@@ -77,31 +100,18 @@ export default function App() {
               >
                 <AntDesign name="logout" size={24} color="white" />
               </PressableButton>
-            );
-          },
-        }}
-      />
-      <Stack.Screen
-        options={({ route }) => {
-          return {
-            headerTitle: route.params ? route.params.data.text : "Details",
-          };
-        }}
-        name="Details"
-        component={GoalDetails}
-      />
-    </>
-  );
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Signup"
-        screenOptions={{
-          headerStyle: { backgroundColor: "#929" },
-          headerTintColor: "white",
-        }}
-      >
-        {userLoggedIn ? AppStack : AuthStack}
+            ),
+          }}
+        />
+        <Stack.Screen
+          options={({ route }) => {
+            return {
+              headerTitle: route.params ? route.params.data.text : "Details",
+            };
+          }}
+          name="Details"
+          component={GoalDetails}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
